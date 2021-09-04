@@ -1,0 +1,13 @@
+package com.clinic.website.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class AuthRequestDTO {
+    String email;
+    String password;
+}
