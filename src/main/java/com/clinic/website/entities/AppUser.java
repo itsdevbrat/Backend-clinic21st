@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,6 +27,7 @@ public class AppUser {
     private String address;
     private LocalDateTime birthDate;
     private LocalDateTime expireDate;
+    private Instant createdDate;
     private List<String> verticals;
     private List<Vertical> userVerticals;
     private List<String> roles;

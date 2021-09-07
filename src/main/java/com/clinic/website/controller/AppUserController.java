@@ -12,6 +12,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.net.URI;
+import java.time.Instant;
 import java.util.Random;
 
 @RestController
@@ -23,7 +24,7 @@ public class AppUserController {
     private final PasswordEncoder encoder;
 
     @GetMapping
-    public Flux<AppUser> getAllUsers(@RequestHeader("email") String email) {
+    public Flux<AppUser> getAllUsers() {
         return appUserService.getAllUsers();
     }
 
@@ -32,10 +33,13 @@ public class AppUserController {
     public Mono<ResponseEntity<String>> saveUser(@RequestBody Mono<AppUser> appUserMono, String email) {
         return appUserMono
 //                .doOnSuccess(appUser -> appUser.setPassword(encoder.encode(appUser.getPassword())))
-                .doOnSuccess(appUser -> appUser.setPassword(appUser.getUserName().concat(NanoIdUtils.randomNanoId(
-                        new Random(),
-                        new char[]{'0','1','2','3','4'},
-                        5))))
+                .doOnSuccess(appUser -> {
+                    appUser.setPassword(appUser.getUserName().concat(NanoIdUtils.randomNanoId(
+                            new Random(),
+                            new char[]{'0', '1', '2', '3', '4'},
+                            5)));
+                    appUser.setCreatedDate(Instant.now());
+                })
                 .subscribeOn(Schedulers.parallel())
                 .flatMap(appUserService::saveUser)
                 .map(savedAppUser -> ResponseEntity.created(URI.create("/user/" + savedAppUser.getId())).body("User saved successfully"))
