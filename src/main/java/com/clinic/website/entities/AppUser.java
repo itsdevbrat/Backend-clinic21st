@@ -18,20 +18,21 @@ public class AppUser {
     @Id
     private String id;
     private String password;
-    private String name;
+    private String userName;
     private String designation;
     private String phoneNumber;
     private String email;
     private String instituteName;
     private String address;
-    private LocalDateTime dob;
+    private LocalDateTime birthDate;
     private LocalDateTime expireDate;
-    private List<Vertical> verticals;
+    private List<String> verticals;
+    private List<Vertical> userVerticals;
     private List<String> roles;
     private boolean enabled;
 
-    public void setDob(LocalDate dob) {
-        this.dob = dob.atStartOfDay();
+    public void setDob(LocalDate birthDate) {
+        this.birthDate = birthDate.atStartOfDay();
     }
 
 }

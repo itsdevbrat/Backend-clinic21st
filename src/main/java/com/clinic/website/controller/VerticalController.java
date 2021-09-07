@@ -15,8 +15,8 @@ public class VerticalController {
     private final VerticalService verticalService;
 
     @GetMapping
-    public Flux<Vertical> getVerticals(){
-        return verticalService.getVerticals();
+    public Flux<String> getVerticals(){
+        return verticalService.getVerticals().map(Vertical::getVerticalName);
     }
 
     @PostMapping

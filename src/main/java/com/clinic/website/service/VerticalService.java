@@ -14,10 +14,11 @@ public class VerticalService {
     private final VerticalRepository verticalRepository;
 
     public Flux<Vertical> getVerticals() {
+        verticalRepository.findAll().doOnNext(System.out::println);
         return verticalRepository.findAll();
     }
 
     public Mono<Vertical> saveVertical(Vertical vertical) {
-        return verticalRepository.insert(vertical);
+        return verticalRepository.save(vertical);
     }
 }
