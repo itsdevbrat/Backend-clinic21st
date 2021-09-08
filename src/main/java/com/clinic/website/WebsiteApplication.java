@@ -8,7 +8,7 @@ import reactor.tools.agent.ReactorDebugAgent;
 public class WebsiteApplication {
 
 	public static void main(String[] args) {
-		ReactorDebugAgent.init();
+//		ReactorDebugAgent.init();
 		SpringApplication.run(WebsiteApplication.class, args);
 	}
 
