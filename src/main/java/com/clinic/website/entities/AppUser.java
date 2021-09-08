@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+//import javax.validation.constraints.Pattern;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,10 +21,12 @@ public class AppUser {
     @Id
     private String id;
     private String password;
-    private String userName;
+    @TextIndexed(weight=3) private String userName;
     private String designation;
+    @TextIndexed
+//    @Pattern(regexp = "[0-9]{10,11}")
     private String phoneNumber;
-    private String email;
+    @TextIndexed(weight=2) private String email;
     private String instituteName;
     private String address;
     private LocalDateTime birthDate;

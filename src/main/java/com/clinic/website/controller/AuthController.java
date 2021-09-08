@@ -6,7 +6,6 @@ import com.clinic.website.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -17,7 +16,7 @@ public class AuthController {
 
     private final AppUserService appUserService;
     private final JwtUtil jwtUtil;
-    private final PasswordEncoder encoder;
+//    private final PasswordEncoder encoder;
 
     @PostMapping("/login")
     @CrossOrigin
