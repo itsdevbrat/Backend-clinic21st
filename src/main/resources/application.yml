@@ -6,7 +6,7 @@ spring:
       uri: "mongodb+srv://subu-user:12345%40Dev@cluster0.5frxr.mongodb.net/cluster0?retryWrites=true&w=majority"
 
 server:
-  port: 8000
+  port: $PORT
 
 logging:
   level:
