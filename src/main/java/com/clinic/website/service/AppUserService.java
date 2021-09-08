@@ -13,6 +13,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.Comparator;
 
+import static org.springframework.util.StringUtils.hasText;
+
 @Service
 @RequiredArgsConstructor
 public class AppUserService {
@@ -49,6 +51,15 @@ public class AppUserService {
 
     public Mono<AppUser> updateUser(AppUser appUser) {
         return appUserRepository.findFirstByEmail(appUser.getEmail())
+                .doOnNext(appUser1 -> {
+                    if (hasText(appUser.getAddress())) appUser1.setAddress(appUser.getAddress());
+                    if (hasText(appUser.getPhoneNumber())) appUser1.setPhoneNumber(appUser.getPhoneNumber());
+                    if (hasText(appUser.getUserName())) appUser1.setUserName(appUser.getUserName());
+                    if (hasText(appUser.getPassword())) appUser1.setPassword(appUser.getPassword());
+                    if (hasText(appUser.getDesignation())) appUser1.setDesignation(appUser.getDesignation());
+                    if (hasText(appUser.getEmail())) appUser1.setEmail(appUser.getEmail());
+                    appUser1.setEnabled(appUser.isEnabled());
+                })
                 .flatMap(appUserRepository::save)
                 .log();
     }

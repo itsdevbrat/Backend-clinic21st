@@ -14,7 +14,7 @@ public class CorsFilter implements WebFilter {
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         HttpHeaders headers = exchange.getResponse().getHeaders();
         headers.add("Access-Control-Allow-Origin", "*");
-        headers.add("Access-Control-Allow-Methods", "GET, POST");
+        headers.add("Access-Control-Allow-Methods", "*");
         headers.add("Access-Control-Max-Age", "36000");
         headers.add("Access-Control-Allow-Headers", "*");
         return chain.filter(exchange);
