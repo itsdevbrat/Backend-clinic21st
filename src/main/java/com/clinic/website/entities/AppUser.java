@@ -34,7 +34,6 @@ public class AppUser {
     private Instant createdDate;
     private List<String> verticals;
     private List<Vertical> userVerticals;
-    private List<String> roles;
     private boolean enabled;
 
     public void setDob(LocalDate birthDate) {

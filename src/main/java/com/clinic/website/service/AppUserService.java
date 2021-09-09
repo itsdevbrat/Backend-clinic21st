@@ -34,7 +34,8 @@ public class AppUserService {
     public Mono<AppUser> saveUser(AppUser appUser) {
         return getUser(appUser.getEmail())
                 .flatMap(user -> Mono.<AppUser>error(new IllegalArgumentException("User already exists with email " + user.getEmail())))
-                .switchIfEmpty(Mono.defer(() -> appUserRepository.save(appUser))).log();
+                .switchIfEmpty(Mono.defer(() -> appUserRepository.save(appUser)))
+                .log();
     }
 
     public Mono<AppUser> getUser(String email) {

@@ -19,6 +19,9 @@ public class VerticalService {
     }
 
     public Mono<Vertical> saveVertical(Vertical vertical) {
-        return verticalRepository.save(vertical);
+        return verticalRepository.findByVerticalName(vertical.getVerticalName())
+                .flatMap(user -> Mono.<Vertical>error(new IllegalArgumentException("Vertical already exists with name " + vertical.getVerticalName())))
+                .switchIfEmpty(Mono.defer(()-> verticalRepository.insert(vertical)))
+                .log();
     }
 }

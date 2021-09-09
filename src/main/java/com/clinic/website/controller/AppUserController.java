@@ -1,9 +1,12 @@
 package com.clinic.website.controller;
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
+import com.clinic.website.dto.AuthRequestDTO;
 import com.clinic.website.entities.AppUser;
 import com.clinic.website.service.AppUserService;
+import com.clinic.website.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -20,11 +23,17 @@ import java.util.Random;
 public class AppUserController {
 
     private final AppUserService appUserService;
+    private final JwtUtil jwtUtil;
 //    private final PasswordEncoder encoder;
 
-    @GetMapping
+    @GetMapping("/page")
     public Flux<AppUser> getUsers(@RequestParam("page") int page) {
         return appUserService.getUsers(page);
+    }
+
+    @GetMapping
+    public Mono<AppUser> getUser(@RequestHeader("email") String email) {
+        return appUserService.getUser(email);
     }
 
     @GetMapping("/search")
@@ -54,6 +63,19 @@ public class AppUserController {
                 .flatMap(appUserService::saveUser)
                 .map(savedAppUser -> ResponseEntity.created(URI.create("/user/" + savedAppUser.getId())).body("User saved successfully"))
                 .onErrorResume(error -> Mono.just(ResponseEntity.badRequest().body(error.getMessage())))
+                .log();
+    }
+
+    @PostMapping("/login")
+    public Mono<ResponseEntity<String>> login(@RequestBody AuthRequestDTO authRequestDTO) {
+        return appUserService
+                .getUser(authRequestDTO.getEmail())
+                .map(appUser ->
+//                        encoder.matches(authRequestDTO.getPassword(), appUser.getPassword())
+                        authRequestDTO.getPassword().equals(appUser.getPassword())
+                                ? ResponseEntity.ok(jwtUtil.generateToken(appUser.getEmail()))
+                                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong username or password"))
+                .defaultIfEmpty(ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No such user"))
                 .log();
     }
 
