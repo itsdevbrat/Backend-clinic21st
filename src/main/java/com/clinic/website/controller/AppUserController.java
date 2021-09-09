@@ -39,7 +39,6 @@ public class AppUserController {
     }
 
     @PostMapping
-    @CrossOrigin
     public Mono<ResponseEntity<String>> saveUser(@RequestBody Mono<AppUser> appUserMono, String email) {
         return appUserMono
 //                .doOnSuccess(appUser -> appUser.setPassword(encoder.encode(appUser.getPassword())))

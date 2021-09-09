@@ -46,7 +46,8 @@ public class AppUserService {
                 Query.query(Criteria.where("enabled").is(false))
                         .addCriteria(TextCriteria.forDefaultLanguage()
                                 .matching(query)),
-                AppUser.class);
+                AppUser.class)
+                .sort(Comparator.comparing(AppUser::getUserName));
     }
 
     public Mono<AppUser> updateUser(AppUser appUser) {
