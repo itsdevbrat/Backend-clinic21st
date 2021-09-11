@@ -2,8 +2,8 @@ package com.clinic.website.service;
 
 import com.clinic.website.entities.AppUser;
 import com.clinic.website.repository.AppUserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
-import org.springframework.data.mongodb.core.index.TextIndexDefinition;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.TextCriteria;
@@ -16,22 +16,12 @@ import java.util.Comparator;
 import static org.springframework.util.StringUtils.hasText;
 
 @Service
+@RequiredArgsConstructor
 public class AppUserService {
 
     private static final int PAGE_SIZE = 15;
     private final AppUserRepository appUserRepository;
     private final ReactiveMongoTemplate mongoTemplate;
-
-    public AppUserService(AppUserRepository appUserRepository, ReactiveMongoTemplate mongoTemplate) {
-        this.appUserRepository = appUserRepository;
-        this.mongoTemplate = mongoTemplate;
-        TextIndexDefinition textIndex = new TextIndexDefinition.TextIndexDefinitionBuilder()
-                .onField("userName", 3f)
-                .onField("email", 2f)
-                .onField("phoneNumber")
-                .build();
-        mongoTemplate.indexOps(AppUser.class).ensureIndex(textIndex);
-    }
 
     public Flux<AppUser> getUsers(int page) {
         return appUserRepository
@@ -54,7 +44,7 @@ public class AppUserService {
 
     public Flux<AppUser> searchUsers(String query) {
         return mongoTemplate.find(
-                Query.query(Criteria.where("enabled").is(false))
+                Query.query(Criteria.where("enabled").is(true))
                         .addCriteria(TextCriteria.forDefaultLanguage()
                                 .matching(query)),
                 AppUser.class)
