@@ -24,4 +24,8 @@ public class VerticalService {
                 .switchIfEmpty(Mono.defer(()-> verticalRepository.insert(vertical)))
                 .log();
     }
+
+    public Mono<Vertical> getVertical(String vertical) {
+        return verticalRepository.findByVerticalName(vertical);
+    }
 }

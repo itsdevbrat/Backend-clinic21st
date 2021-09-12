@@ -41,8 +41,10 @@ public class AuthFilter implements WebFilter {
         if (hasText(token)
                 && !jwtUtil.isTokenExpired(token)) {
 
-            if (exchange.getRequest().getPath().toString().equals("/user")
-                    && exchange.getRequest().getMethod().equals(HttpMethod.GET))
+            if ((exchange.getRequest().getPath().toString().equals("/user")
+                    || exchange.getRequest().getPath().toString().matches("/user/verticals.*")
+                    || exchange.getRequest().getPath().toString().matches("/vertical/id.*"))
+                    && exchange.getRequest().getMethod().equals(HttpMethod.GET) )
                 return appUserService.getUser(jwtUtil.getEmailFromToken(token))
                         .flatMap(user -> {
                             ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()

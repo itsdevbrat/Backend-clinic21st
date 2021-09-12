@@ -30,4 +30,8 @@ public class VerticalController {
                 .onErrorResume(error -> Mono.just(ResponseEntity.badRequest().body(error.getMessage())));
     }
 
+    @GetMapping("/id")
+    public Mono<Vertical> getVerticals(@RequestParam("vertical") String vertical) {
+        return verticalService.getVertical(vertical);
+    }
 }

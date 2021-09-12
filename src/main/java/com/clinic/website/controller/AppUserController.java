@@ -15,6 +15,7 @@ import reactor.core.scheduler.Schedulers;
 
 import java.net.URI;
 import java.time.Instant;
+import java.util.List;
 import java.util.Random;
 
 @RestController
@@ -77,6 +78,11 @@ public class AppUserController {
                                 : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong username or password"))
                 .defaultIfEmpty(ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No such user"))
                 .log();
+    }
+
+    @GetMapping("/verticals")
+    public Mono<List<String>> getUserVerticals(@RequestParam("email") String email ) {
+        return appUserService.getUserVerticals(email);
     }
 
 }

@@ -12,6 +12,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Comparator;
+import java.util.List;
 
 import static org.springframework.util.StringUtils.hasText;
 
@@ -22,6 +23,7 @@ public class AppUserService {
     private static final int PAGE_SIZE = 15;
     private final AppUserRepository appUserRepository;
     private final ReactiveMongoTemplate mongoTemplate;
+    private final VerticalService verticalService;
 
     public Flux<AppUser> getUsers(int page) {
         return appUserRepository
@@ -64,5 +66,10 @@ public class AppUserService {
                 })
                 .flatMap(appUserRepository::save)
                 .log();
+    }
+
+    public Mono<List<String>> getUserVerticals(String email) {
+        return  appUserRepository.findFirstByEmail(email)
+                .map(AppUser::getVerticals);
     }
 }
