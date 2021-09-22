@@ -1,7 +1,5 @@
 package com.clinic.website.filters;
 
-import com.clinic.website.service.AdminUserService;
-import com.clinic.website.service.AppUserService;
 import com.clinic.website.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -24,8 +22,6 @@ import static org.springframework.util.StringUtils.hasText;
 public class AuthFilter implements WebFilter {
 
     private final JwtUtil jwtUtil;
-    private final AppUserService appUserService;
-    private final AdminUserService adminUserService;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
@@ -38,34 +34,26 @@ public class AuthFilter implements WebFilter {
 
 
         String token = exchange.getRequest().getHeaders().getFirst("Authorization");
-        if (hasText(token)
-                && !jwtUtil.isTokenExpired(token)) {
+        try {
+            if (hasText(token)
+                    && jwtUtil.getEmailFromToken(token) != null
+                    && !jwtUtil.getEmailFromToken(token).isEmpty()) {
 
-            if ((exchange.getRequest().getPath().toString().equals("/user")
-                    || exchange.getRequest().getPath().toString().matches("/user/verticals.*")
-                    || exchange.getRequest().getPath().toString().matches("/vertical/id.*"))
-                    && exchange.getRequest().getMethod().equals(HttpMethod.GET) )
-                return appUserService.getUser(jwtUtil.getEmailFromToken(token))
-                        .flatMap(user -> {
-                            ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
-                                    .header("email", jwtUtil.getEmailFromToken(token)).build();
-                            ServerWebExchange mutatedExchange = exchange.mutate().request(mutatedRequest).build();
-                            return chain.filter(mutatedExchange);
-                        })
-                        .switchIfEmpty(Mono.defer(() -> {
-                            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-                            return exchange.getResponse().setComplete();
-                        }));
-
-
-            return adminUserService.getUser(jwtUtil.getEmailFromToken(token))
-                    .flatMap(user -> chain.filter(exchange))
-                    .switchIfEmpty(Mono.defer(() -> {
-                        exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-                        return exchange.getResponse().setComplete();
-                    }));
-
-        } else {
+                if ((exchange.getRequest().getPath().toString().equals("/user")
+                        || exchange.getRequest().getPath().toString().matches("/user/verticals.*")
+                        || exchange.getRequest().getPath().toString().matches("/vertical/id.*"))
+                        && exchange.getRequest().getMethod().equals(HttpMethod.GET)) {
+                    ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
+                            .header("email", jwtUtil.getEmailFromToken(token)).build();
+                    ServerWebExchange mutatedExchange = exchange.mutate().request(mutatedRequest).build();
+                    return chain.filter(mutatedExchange);
+                }
+                return chain.filter(exchange);
+            } else {
+                exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+                return exchange.getResponse().setComplete();
+            }
+        } catch (Exception e) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
