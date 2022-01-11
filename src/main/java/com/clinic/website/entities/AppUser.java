@@ -29,6 +29,7 @@ public class AppUser {
     @TextIndexed(weight=2) private String email;
     private String instituteName;
     private String address;
+    @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDateTime birthDate;
     private LocalDateTime expireDate;
     private Instant createdDate;
