@@ -22,7 +22,7 @@ public class VerticalService {
         return verticalRepository.findByVerticalName(vertical.getVerticalName())
                 .flatMap(user -> Mono.<Vertical>error(new IllegalArgumentException("Vertical already exists with name " + vertical.getVerticalName())))
                 .switchIfEmpty(Mono.defer(()-> verticalRepository.insert(vertical)))
-                .log();
+                .doOnCancel(() -> new Exception().printStackTrace()).log();
     }
 
     public Mono<Vertical> getVertical(String vertical) {
