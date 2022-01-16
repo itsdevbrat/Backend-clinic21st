@@ -26,7 +26,7 @@ public class VerticalController {
     public Mono<ResponseEntity<String>> saveVertical(@RequestBody Vertical vertical) {
         return verticalService.saveVertical(vertical)
                 .map(vertical1 -> ResponseEntity
-                        .ok("Vertical saved successfully").status(201))
+                        .ok("Vertical saved successfully"))
                 .onErrorResume(error -> {
                     error.printStackTrace();
                     return Mono.just(ResponseEntity.badRequest().body(error.getMessage()));
