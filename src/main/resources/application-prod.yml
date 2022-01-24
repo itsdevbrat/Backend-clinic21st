@@ -3,7 +3,7 @@ spring:
 #    import: optional:configserver:http://localhost:8080/
   data:
     mongodb:
-      uri: "mongodb+srv://subu-user:12345%40Dev@cluster0.5frxr.mongodb.net/cluster0?retryWrites=true&w=majority"
+      uri: "mongodb+srv://subu-user:12345%40Dev@cluster0.5frxr.mongodb.net/cluster0?retryWrites=true&w=majority&maxIdleTimeMS=300000"
 
 server:
   port: 8000
