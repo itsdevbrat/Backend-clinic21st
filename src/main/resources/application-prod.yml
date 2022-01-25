@@ -13,3 +13,9 @@ logging:
     org:
       springframework:
         data: DEBUG
+        
+sentry:
+  dsn: https://5b42067405f84eb59683baa45faff0f6@o1126539.ingest.sentry.io/6167465
+  # Set traces-sample-rate to 1.0 to capture 100% of transactions for performance monitoring.
+  # We recommend adjusting this value in production.
+  traces-sample-rate: 1.0
